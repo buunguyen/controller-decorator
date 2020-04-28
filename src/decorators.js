@@ -1,15 +1,20 @@
 const PREFIX = '$$route_'
 
+function flatten(arr) {
+  return Array.prototype.concat(...arr);
+}
+
 function destruct(args) {
   const hasPath = typeof args[0] === 'string'
   const path = hasPath ? args[0] : ''
   const middleware = hasPath ? args.slice(1) : args
+  const flattenedMiddleware = flatten(middleware)
 
-  if (middleware.some(m => typeof m !== 'function')) {
+  if (flattenedMiddleware.some(m => typeof m !== 'function')) {
     throw new Error('Middleware must be function')
   }
 
-  return [path, middleware]
+  return [path, flattenedMiddleware]
 }
 
 // @route(method, path: optional, ...middleware: optional)

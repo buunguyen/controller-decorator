@@ -5,6 +5,7 @@ function m1() {}
 function m2() {}
 function m3() {}
 function m4() {}
+function m5() {}
 
 describe('controller', () => {
   const {controller, route, all, get, post, del} = decorators
@@ -83,4 +84,15 @@ describe('controller', () => {
       {url: '/users/delete', middleware: [m1, m2, m3, m4], method: 'delete', fnName: '_delete'}
     ])
   })
+
+  it('should define correct $routes when paths and array of middlewares are specified', () => {
+    @controller('/users', m1, m2)
+    class Ctrl {
+      @post('/post', [m3, m4], m5) _post() {}
+    }
+
+    assert.deepEqual((new Ctrl()).$routes, [
+      {url: '/users/post', middleware: [m1, m2, m3, m4, m5], method: 'post', fnName: '_post'},
+    ])
+  });
 })
